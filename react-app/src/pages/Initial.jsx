@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate,useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
+import { addScore } from '../services/quizzServices';
 const Container = styled.div`
   flex-grow:1;
   display:flex;
@@ -31,17 +32,29 @@ const Button = styled.button`
   }
 `;
 const Initial = () => {
+  const location = useLocation()
   const navigate = useNavigate()
+  const [info, setInfo] = useState({
+    initial:"", score:0
+  });
   useEffect(() => {
-    console.log(navigate)
+    if(!location.state?.point){
+      navigate("/highscores")
+    } else
+    setInfo({...info,score:location.state?.point})
   }, []);
+
+  const handleSubmit = () => {
+    addScore(info)
+    navigate("/highscores")
+  };
   
   return <Container>
     <Box title='All done!'>
-    <Point>Your final score is 9.</Point>
+    <Point>Your final score is {info.score}.</Point>
     <Label>Enter initials:</Label>
-    <Input/>
-    <Button>Submit</Button>
+    <Input value={info.initial} name="initial" onChange={({target: {value,name}})=>setInfo({...info, [name]: value})}/>
+    <Button onClick={handleSubmit}>Submit</Button>
     </Box>
   </Container>;
 };

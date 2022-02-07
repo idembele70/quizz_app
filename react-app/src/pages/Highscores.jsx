@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
+import { getAllScore, resetScore } from '../services/quizzServices';
 const Container = styled.div`
   flex-grow:1;
   display:flex;
@@ -34,34 +35,39 @@ const Button = styled.button`
     margin-right: 5px;
   }
 `;
+const EmptyScore = styled.h3`
+  
+`;
 const Highscores = () => {
   const navigate = useNavigate()
-  const [scores, setscores] = useState([
-    {name:"SJ", point: 43},
-    {name: "AJ", point: 38}])
+  const [scores, setscores] = useState([])
   useEffect(() => {
-    setscores(scores.sort(
-      (a,b)=>b.point-a.point
-    ))
-  }, [scores]);
-  console.log(scores)
+    if (getAllScore())
+      setscores(getAllScore())
+    else
+      setscores([])
+  }, [])
   return <Container>
     <BoxContainer>
-    <Box title="Highscores">
-  <List>{
-    scores.map(
-      ({name,point},idx)=>(
-        <ListItem key={name+idx}>
-          {name}-{point}
-        </ListItem>
-      )
-    )}
-  </List>
-  <Button onClick={()=>navigate("/")}>Go Back</Button>
-  <Button onClick={()=>console.log("clicked")}>Clear Highscores</Button>
-    </Box>
+      <Box title="Highscores">
+        {scores.length ?
+          <List>{
+            scores?.sort(
+              (a, b) => b.score - a.score
+            )?.map(
+              ({ initial, score }, idx) => (
+                <ListItem key={initial + idx}>
+                  {initial.toUpperCase()} - {score}
+                </ListItem>
+              )
+            )}
+          </List> : <EmptyScore>Nothing found</EmptyScore>}
+        <Button onClick={() => navigate("/")}>Go Back</Button>
+        <Button onClick={() => { resetScore(); window.location.reload() }}>Clear Highscores</Button>
+      </Box>
     </BoxContainer>
   </Container>;
 };
 
 export default Highscores;
+

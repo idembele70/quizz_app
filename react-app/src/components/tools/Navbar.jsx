@@ -42,8 +42,10 @@ const Navbar = ({ value, onBadResponse, start, setStart, setFinish,finish }) => 
           setTime(time - 1);
       }, 1000);
     }
-    else
+    else{
       setTime(0)
+      setFinish(true)
+    }
     return () => {
       clearInterval(timer)
     };

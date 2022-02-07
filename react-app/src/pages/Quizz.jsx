@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
 const Container = styled.div`
@@ -40,6 +40,7 @@ opacity:${props => props.display ? 1:0};
 `;
 const Quizz = ({ onBadResponse, finish, setFinish }) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [questions, setQuestions] = useState([{
     questionText: String(),options: [], answer:""
   }]);
@@ -74,12 +75,13 @@ const Quizz = ({ onBadResponse, finish, setFinish }) => {
   };
   const { questionText,options,answer } = questions[qIndex];
   useEffect(() => {
-    if(finish)
-    navigate({pathname:"/addInitial", state: {point}})
+    if(finish){
+      navigate("/addInitial", {state : {point}})
+    }
     return ()=>{
       setFinish(true)
     }
-  }, [finish, navigate]);
+  }, [finish, navigate,location]);
   
   return <Container>
     <BoxContainer>
