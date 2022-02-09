@@ -41,6 +41,7 @@ const Button = styled.button`
 const EmptyScore = styled.h3`
   
 `;
+
 const Highscores = () => {
   const navigate = useNavigate()
   const [scores, setscores] = useState([])
@@ -49,7 +50,7 @@ const Highscores = () => {
       setscores(getAllScore())
     else
       setscores([])
-  }, [])
+  }, [scores])
   return <Container>
     <BoxContainer>
       <Box title="Highscores">
@@ -66,7 +67,7 @@ const Highscores = () => {
             )}
           </List> : <EmptyScore>Nothing found</EmptyScore>}
         <Button onClick={() => navigate("/")}>Go Back</Button>
-        <Button onClick={() => { resetScore(); window.location.reload() }}>Clear Highscores</Button>
+        <Button onClick={() => resetScore()}>Clear Highscores</Button>
       </Box>
     </BoxContainer>
   </Container>;
