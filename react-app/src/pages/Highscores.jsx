@@ -2,26 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
+import { mobile } from '../components/tools/responsive';
 import { getAllScore, resetScore } from '../services/quizzServices';
 const Container = styled.div`
   flex-grow:1;
   display:flex;
   justify-content: center;
-margin-top: 40px;
+  align-items: flex-start;
 `;
 const BoxContainer = styled.div`
 width: auto;
 min-height: 250px;
 display:flex;
-align-items: center;
+align-items: start;
 justify-content: center;
-padding-bottom:20%;
+padding-top:10%;
+${mobile({padding: "10% 10px 0"})}
 `;
 const List = styled.ul`
+  list-style-type: decimal;
   
 `;
 const ListItem = styled.li`
-  list-style-type: decimal;
+text-align: left;
 `;
 const Button = styled.button`
   background-color: #218380;

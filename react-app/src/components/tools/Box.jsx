@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { mobile } from './responsive';
 
 const Container = styled.div`
   max-width: 655px;
@@ -9,11 +10,11 @@ const Container = styled.div`
   border-radius: 20px;
   box-shadow: 6px 3px 2px #b4b0b06f;
   border: 2px solid #6b6a6a6f;
+  ${mobile({width: "calc(100% - 30px)", padding: "25px 15px", textAlign:"center"})}
 `;
 const Title = styled.h2`
 `;
 const Main = styled.div`
-  
 `;
 const Box = ({title, children}) => {
   return <Container>

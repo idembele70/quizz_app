@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from "styled-components"
+import { mobile } from './responsive';
 const Container = styled.header`
   background-color: #218380;
   color: #ffffff;
@@ -10,11 +11,12 @@ const Container = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
+  ${mobile({padding: "0 10px"})}
 `;
 const Left = styled.div`
 display: flex;
 align-items: baseline;
-flex:1;
+flex:2;
 `;
 const Title = styled.p`
 margin: 0;
@@ -28,46 +30,18 @@ const Right = styled.div`
   flex:1;
   text-align: end;
 `;
-const Navbar = ({ value, onBadResponse, start, setStart, setFinish,finish }) => {
+const Navbar = ({ time }) => {
   const navigate = useNavigate()
-  const [time, setTime] = useState(50);
+  const location = useLocation()
+  const showTimer = location.state?.point || location.pathname.match(/quiz/ig)
   useEffect(() => {
-    let timer = null
-    if (time > 1) {
-      timer = setInterval(() => {
-        if (value) {
-          setTime(time - 10);
-          onBadResponse(false)
-        } else
-          setTime(time - 1);
-      }, 1000);
-    }
-    else{
-      setTime(0)
-      setFinish(true)
-    }
-    return () => {
-      clearInterval(timer)
-    };
-  }, [time, value]);
-  useEffect(() => {
-    if (start) {
-      setTime(50)
-      setStart(false)
-      setFinish(false)
-    }
-    if(finish){
-      setTime(0)
-      setFinish(true)
-    }
-  }, [start, setStart, finish, setFinish]);
-
+  }, [time])
   return <Container>
     <Left>
-      <Title onClick={() => navigate("/highscores")} >View Highscores</Title>
+      <Title onClick={() => { navigate("/highscores") }} >View Highscores</Title>
       <I className="fas fa-hand-point-left fa-lg" />
     </Left>
-    <Right>Time: {time}</Right>
+    <Right>Time: {showTimer ? time : null}</Right>
   </Container>;
 };
 

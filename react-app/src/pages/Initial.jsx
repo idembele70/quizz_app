@@ -2,14 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate,useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
+import { mobile } from '../components/tools/responsive';
 import { addScore } from '../services/quizzServices';
 const Container = styled.div`
   flex-grow:1;
   display:flex;
   justify-content: center;
-  padding-top: 10%;
+  align-items: start;
+`;
+const BoxContainer = styled.div`
+width: auto;
+min-height: 250px;
+display:flex;
+padding-top: 10%;
+${mobile({padding: "10% 10px 0"})}
 `;
 const Point = styled.p`
+`;
+const Form = styled.form`
+  display:flex;
+  flex-wrap: wrap;
+  width: auto;
+  justify-content: center;
+  & > * {
+   ${mobile({margin: 5})}
+  }
 `;
 const Label = styled.label`
   
@@ -38,7 +55,7 @@ const Initial = () => {
     initial:"", score:0
   });
   useEffect(() => {
-    if(!location.state?.point){
+    if(Number.isNaN(location.state?.point)){
       navigate("/highscores")
     } else
     setInfo({...info,score:location.state?.point})
@@ -50,12 +67,16 @@ const Initial = () => {
   };
   
   return <Container>
+    <BoxContainer>
     <Box title='All done!'>
     <Point>Your final score is {info.score}.</Point>
+    <Form onSubmit={handleSubmit}>
     <Label>Enter initials:</Label>
     <Input value={info.initial} name="initial" onChange={({target: {value,name}})=>setInfo({...info, [name]: value})}/>
-    <Button onClick={handleSubmit}>Submit</Button>
+    <Button >Submit</Button>
+    </Form>
     </Box>
+    </BoxContainer>
   </Container>;
 };
 

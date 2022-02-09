@@ -15,26 +15,19 @@ const Container = styled.div`
   width: 100vw;
 `;
 function App() {
-  const [value, setvalue] = useState(0);
-  const [start, setStart] = useState(false);
-  const [finish, setFinish] = useState(false);
-  const handleBadResponse = (val) => {
-    setvalue(val)
+  const [time, setTime] = useState(null);
+const handlePointChange = (v) => {
+  setTime(v)
 };
-const handleStart = (val) => {
-  setStart(val)
-};
-const handleFinish = (val) => {
-  setFinish(val)
-};
+  
 
   return (
     <BrowserRouter>
     <Container>
-      <Navbar value={value} onBadResponse={handleBadResponse} start={start} setStart={handleStart} finish={finish} setFinish={handleFinish} />
+      <Navbar time={time} />
       <Routes>
-      <Route path="/" element={<Home setStart={handleStart} setFinish={handleFinish}  />} exact />
-      <Route path="/quiz" element={<Quizz onBadResponse={handleBadResponse} finish={finish} setFinish={handleFinish} />} exact />
+      <Route path="/" element={<Home />} exact />
+      <Route path="/quiz" element={<Quizz onPointChange={handlePointChange} />} exact />
       <Route path="/addInitial" element={<Initial />} exact />
       <Route path="/highscores" element={<Highscores/>} exact />
       <Route path="*" element={<Navigate replace to="/"/>} />

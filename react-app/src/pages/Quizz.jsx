@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
+import { mobile } from '../components/tools/responsive';
 const Container = styled.div`
   flex-grow:1;
   display:flex;
   justify-content: center;
-  padding-top: 10%;
-`;
-const PointContainer = styled.h2`
-  color:#218380;
-  text-align: center;
-`;
+  align-items: start;
+  `;
 const BoxContainer = styled.div`
+width: auto;
+min-height: 250px;
+display:flex;
+align-items: center;
+justify-content: center;
+padding-top: 10%;
+${mobile({padding: "10% 10px 0"})}
 `;
 const Question = styled.button`
   background-color:#218380;
@@ -36,17 +40,18 @@ const Hr = styled.hr`
 opacity:${props => props.display ? 1:0};
 `;
 const Response = styled.span`
-opacity:${props => props.display ? 1:0};
+opacity:${props => props.opacity};
 `;
-const Quizz = ({ onBadResponse, finish, setFinish }) => {
+const Quizz = ({onPointChange}) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [questions, setQuestions] = useState([{
     questionText: String(),options: [], answer:""
   }]);
   const [qIndex, setQIndex] = useState(0);
-  const [point, setPoint] = useState(0);
   const [response, setResponse] = useState(false);
+  const [point, setPoint] = useState(50);
+  const timer = useRef(null)
   const [showResponse, setShowResponse] = useState(false);
   useEffect(() => {
     fetch("/data.json")
@@ -54,45 +59,47 @@ const Quizz = ({ onBadResponse, finish, setFinish }) => {
       .then(data => setQuestions(data.questions))
       .catch(err => console.error("Error while fetching quizz in Quizz.jsx", err))
   }, []);
-  const handleResponse = (response = false) => {
+  const handleResponse = (res = false) => {
     setShowResponse(true)
     if(qIndex + 1 >= questions.length){
-      return setFinish(true)
+      navigate("/addInitial", {state : {point}})
+    } else {
+      if(!res){
+        clearInterval(timer.current)
+        setPoint(p=>p > 10 ? p-10 :0)
+      }
+      setResponse(res)
+      setTimeout(() => {
+        setShowResponse(false)
+        setQIndex(qIndex +1)
+      }, 500);
     }
-    if (response) {
-      setPoint(point+10)
-      setResponse(true)
-    }
-    else{
-      setPoint(point + (point > 10 ? -10 : 0))
-      onBadResponse(true)
-      setResponse(false)
-    }
-    setTimeout(() => {
-      setQIndex(qIndex + 1)
-      setShowResponse(false)
-    }, 2000);
   };
   const { questionText,options,answer } = questions[qIndex];
   useEffect(() => {
-    if(finish){
-      navigate("/addInitial", {state : {point}})
-    }
-    return ()=>{
-      setFinish(true)
-    }
-  }, [finish, navigate,location]);
+    onPointChange(point)
+    if(point > 0)
+    {
+    timer.current = setInterval(() => {
+      setPoint(point - 1)
+    }, 1000);
+  } else {
+    navigate("/addInitial", {state : {point}})
+  }
+      return ()=>{
+        clearInterval(timer.current)
+      }
+  }, [timer,point,onPointChange, navigate]);
   
   return <Container>
     <BoxContainer>
-    <PointContainer>{point}</PointContainer>
       {
         <Box title={questionText}>
           {options?.map((option,idx) =>
             <Question disabled={showResponse} key={option+idx} onClick={() => handleResponse(option === answer)} >{option}</Question>
           )}
           <Hr display={showResponse}/>
-          <Response display={showResponse}>{response ? "Correct" : "Incorrect"}</Response>
+          <Response opacity={showResponse ? 1 : 0}>{response ? "Correct" : "Incorrect"}</Response>
         </Box>
           }
     </BoxContainer>

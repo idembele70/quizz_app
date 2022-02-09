@@ -2,18 +2,20 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '../components/tools/Box';
+import { mobile } from '../components/tools/responsive';
 const Container = styled.div`
   flex-grow:1;
   display:flex;
   justify-content: center;
-  padding-top: 10%;
+  align-items: flex-start;
   `;
 const BoxContainer = styled.div`
-  width: 70%;
-  height: 250px;
+padding-top: 10%;
+  min-height: 250px;
   display:flex;
   align-items: center;
   justify-content: center;
+  ${mobile({paddingLeft: 10, paddingRight: 10 })}
 `;
 const Paragrah = styled.p``;
 const Button = styled.button`
